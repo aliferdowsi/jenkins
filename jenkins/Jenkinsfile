@@ -9,6 +9,11 @@ pipeline {
     }
 
     stages {
+        stage('Setup') {
+            steps {
+                sh 'git config --global --add safe.directory /var/jenkins_home/workspace'
+            }
+        }
         stage('Checkout') {
             steps {
                 // Check out the code from SCM (Jenkins will use SCM info from job configuration)
