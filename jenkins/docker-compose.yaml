@@ -1,0 +1,19 @@
+services:
+  jenkins:
+    container_name: jenkins
+    image: jenkins/jenkins:lts
+    privileged: true
+    user: root
+    ports:
+      - 8089:8080
+      - 50000:50000
+    volumes:
+      - ./jenkins_configuration:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: >
+      bash -c "groupadd -g $(stat -c '%g' /var/run/docker.sock) docker &&
+               usermod -aG docker jenkins &&
+               chown jenkins:docker /var/run/docker.sock &&
+               apt-get update &&
+               apt-get install -y docker.io &&
+               /usr/bin/tini -- /usr/local/bin/jenkins.sh"
