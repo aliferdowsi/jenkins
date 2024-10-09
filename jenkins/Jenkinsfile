@@ -11,7 +11,8 @@ pipeline {
     stages {
         stage('Setup') {
             steps {
-                sh 'git config --global --add safe.directory /var/jenkins_home/workspace'
+                sh 'cd /var/jenkins_home'
+                sh 'git config --global --add safe.directory ‘*’'
             }
         }
         stage('Checkout') {

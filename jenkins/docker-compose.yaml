@@ -11,9 +11,15 @@ services:
       - ./jenkins_configuration:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     command: >
-      bash -c "groupadd -g $(stat -c '%g' /var/run/docker.sock) docker &&
-               usermod -aG docker jenkins &&
-               chown jenkins:docker /var/run/docker.sock &&
-               apt-get update &&
-               apt-get install -y docker.io &&
-               /usr/bin/tini -- /usr/local/bin/jenkins.sh"
+      bash -c "getent group docker || groupadd -g $(stat -c '%g' /var/run/docker.sock) docker && 
+              usermod -aG docker jenkins &&
+              chown jenkins:docker /var/run/docker.sock &&
+              apt-get update &&
+              apt-get install -y docker.io &&
+              /usr/bin/tini -- /usr/local/bin/jenkins.sh"
+# L14 - Check if the "docker" group exists; create it if missing
+# L15 - Add "jenkins" user to the "docker" group
+# L16 - Set ownership of the Docker socket to jenkins:docker
+# L17 - Update package lists
+# L18 - Install Docker inside the container
+# L19 - Start Jenkins using tini (process manager)
