@@ -12,14 +12,12 @@ pipeline {
         stage('Setup') {
             steps {
                 sh 'ls'
-                sh 'cd /var/jenkins_home'
-                sh 'git config --global --add safe.directory ‘*’'
             }
         }
         stage('Checkout') {
             steps {
-                // Check out the code from SCM (Jenkins will use SCM info from job configuration)
-                checkout scm
+                // Checkout source code from SCM (Git repository)
+                git branch: 'main', url: 'https://github.com/aliferdowsi/jenkins.git'
             }
         }
         stage('Build') {

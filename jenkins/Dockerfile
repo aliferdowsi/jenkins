@@ -15,7 +15,9 @@ RUN apt-get update && \
     rm apache-maven-${MAVEN_VERSION}-bin.tar.gz && \
     ln -s /opt/apache-maven-${MAVEN_VERSION} /opt/maven && \
     # Clean up
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    # safe directory permission
+    git config --global --add safe.directory "*"
 
 # Create jenkins user (optional, but recommended for better security)
 RUN useradd -m -d /home/jenkins -s /bin/bash jenkins
