@@ -11,6 +11,7 @@ pipeline {
     stages {
         stage('Setup') {
             steps {
+                sh 'ls'
                 sh 'cd /var/jenkins_home'
                 sh 'git config --global --add safe.directory ‘*’'
             }
