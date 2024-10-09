@@ -9,15 +9,10 @@ pipeline {
     }
 
     stages {
-        stage('Setup') {
-            steps {
-                sh 'ls'
-            }
-        }
         stage('Checkout') {
             steps {
-                // Checkout source code from SCM (Git repository)
-                git branch: 'main', url: 'https://github.com/aliferdowsi/jenkins.git'
+                // Check out the code from SCM (Jenkins will use SCM info from job configuration)
+                checkout scm
             }
         }
         stage('Build') {
