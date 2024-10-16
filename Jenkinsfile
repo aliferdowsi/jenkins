@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'jdk21-maven-git' // Label for your Jenkins agent that has Java and Maven
+        label 'jdk21-maven-git-docker' // Label for your Jenkins agent that has Java and Maven
     }
     
     environment {
@@ -24,7 +24,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 // Run unit tests (if there are any in your project)
-                sh 'docker build -t law12345/test-jenkins:latest .'
+                sh 'docker build -t law12345/test-server-jenkins:latest .'
             }
         }
         stage('Image ls') {
