@@ -15,16 +15,22 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Build') {
+        stage('Build Spring-Boot') {
             steps {
                 // Run Maven to build the project
                 sh 'mvn clean install'
             }
         }
-        stage('Test') {
+        stage('Build Docker Image') {
             steps {
                 // Run unit tests (if there are any in your project)
-                sh 'mvn test'
+                sh 'docker build -t law12345/test-jenkins:latest .'
+            }
+        }
+        stage('Image ls') {
+            steps {
+                // Run unit tests (if there are any in your project)
+                sh 'docker image ls'
             }
         }
     }
