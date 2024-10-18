@@ -33,3 +33,6 @@ USER jenkins
 
 # Set working directory
 WORKDIR /home/jenkins
+
+# Start the Docker daemon when the container starts
+CMD ["sh", "-c", "dockerd & while ! docker info > /dev/null 2>&1; do sleep 1; done; exec bash"]

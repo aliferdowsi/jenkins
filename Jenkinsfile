@@ -21,10 +21,14 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
+        stage('Docker Status') {
+            steps {
+                sh 'sudo systemctl status docker'
+            }
+        }
         stage('Build Docker Image') {
             steps {
-                // Run unit tests (if there are any in your project)
-                sh 'docker build -t law12345/test-server-jenkins:latest .'
+                sh 'sudo systemctl start docker'
             }
         }
         stage('Image ls') {
