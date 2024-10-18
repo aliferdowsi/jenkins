@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.adesso</groupId>
-	<artifactId>backend</artifactId>
+	<artifactId>jenkins</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>backend</name>
+	<name>jenkins</name>
 	<description>Demo project of Spring Boot for jenkins test</description>
 	<url/>
 	<licenses>
