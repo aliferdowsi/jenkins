@@ -21,20 +21,32 @@ pipeline {
                 sh 'mvn clean install'
             }
         }
-        stage('Docker Status') {
+        stage('Build Docker Image') {
             steps {
-                sh 'sudo systemctl status docker'
+                sh 'mvn clean install'
             }
         }
         stage('Build Docker Image') {
             steps {
-                sh 'sudo systemctl start docker'
+                sh 'docker build -t law12345/app-jenkins:testserver .'
             }
         }
-        stage('Image ls') {
+        stage('Docker Login & Push') {
             steps {
-                // Run unit tests (if there are any in your project)
-                sh 'docker image ls'
+                script {
+                    // Use credentials stored in Jenkins to log in
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub', 
+                                                     usernameVariable: 'DOCKER_USER', 
+                                                     passwordVariable: 'DOCKER_PASS')]) {
+                        // Log in to Docker Hub
+                        sh """
+                            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        """
+                    }
+
+                    // Push the image to Docker Hub
+                    sh "docker push law12345/app-jenkins:testserver"
+                }
             }
         }
     }
