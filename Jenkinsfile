@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'jdk21-maven-git' // Label for your Jenkins agent that has Java and Maven
+        label 'jdk21-maven-git-docker' // Label for your Jenkins agent that has Java and Maven
     }
     
     environment {
@@ -15,16 +15,26 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Build') {
+        stage('Build Spring-Boot') {
             steps {
                 // Run Maven to build the project
                 sh 'mvn clean install'
             }
         }
-        stage('Test') {
+        stage('Docker Status') {
+            steps {
+                sh 'sudo systemctl status docker'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                sh 'sudo systemctl start docker'
+            }
+        }
+        stage('Image ls') {
             steps {
                 // Run unit tests (if there are any in your project)
-                sh 'mvn test'
+                sh 'docker image ls'
             }
         }
     }
