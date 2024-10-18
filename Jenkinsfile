@@ -23,11 +23,6 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                sh 'mvn clean install'
-            }
-        }
-        stage('Build Docker Image') {
-            steps {
                 sh 'docker build -t law12345/app-jenkins:testserver .'
             }
         }
