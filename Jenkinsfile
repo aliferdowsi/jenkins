@@ -44,6 +44,18 @@ pipeline {
                 }
             }
         }
+        stage('SSH to Host System') {
+            steps {
+                script {
+                    // Use SSH credentials stored in Jenkins (ID is 'host-ssh-key')
+                    sshagent(['host-ssh-key']) {
+                        sh '''
+                            ssh -o StrictHostKeyChecking=no your_host_user@localhost "echo 'Connected to host system'; uptime"
+                        '''
+                    }
+                }
+            }
+        }
     }
 
     post {
