@@ -10,6 +10,7 @@ services:
     volumes:
       - ./jenkins_configuration:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
+      - ../jenkins-private-key:/home/jenkins-private-key
     command: >
       bash -c "getent group docker || groupadd -g $(stat -c '%g' /var/run/docker.sock) docker && 
               usermod -aG docker jenkins &&
@@ -22,4 +23,4 @@ services:
 # L16 - Set ownership of the Docker socket to jenkins:docker
 # L17 - Update package lists
 # L18 - Install Docker inside the container
-# L19 - Start Jenkins using tini (process manager)
+# L19 - Start Jenkins using tini (process manager) 

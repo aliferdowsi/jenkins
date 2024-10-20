@@ -15,10 +15,11 @@ pipeline {
                 checkout scm
             }
         }
+        /* 
         stage('Build Spring-Boot') {
             steps {
                 // Run Maven to build the project
-                sh 'mvn clean install'
+                sh 'mvn clean package'
             }
         }
         stage('Build Docker Image') {
@@ -43,14 +44,14 @@ pipeline {
                     sh "docker push law12345/app-jenkins:testserver"
                 }
             }
-        }
+        } */
         stage('SSH to Host System') {
             steps {
                 script {
                     // Use SSH credentials stored in Jenkins (ID is 'host-ssh-key')
                     sshagent(['host-ssh-key']) {
                         sh '''
-                            ssh -o StrictHostKeyChecking=no your_host_user@localhost "echo 'Connected to host system'; uptime"
+                            ssh -o StrictHostKeyChecking=no docker-agent@172.23.62.135 "echo 'Connected to host system'; uptime"
                         '''
                     }
                 }
