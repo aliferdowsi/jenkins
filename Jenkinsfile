@@ -15,7 +15,6 @@ pipeline {
                 checkout scm
             }
         }
-        /* 
         stage('Build Spring-Boot') {
             steps {
                 // Run Maven to build the project
@@ -44,14 +43,24 @@ pipeline {
                     sh "docker push law12345/app-jenkins:testserver"
                 }
             }
-        } */
+        }
         stage('SSH to Host System') {
             steps {
                 script {
                     // Use SSH credentials stored in Jenkins (ID is 'host-ssh-key')
                     sshagent(['host-ssh-key']) {
+                        // Execute all commands in one SSH call
                         sh '''
-                            ssh -o StrictHostKeyChecking=no docker-agent@172.23.62.135 "echo 'Connected to host system'; uptime"
+                            ssh -o StrictHostKeyChecking=no ferdowsi@172.23.62.135 "
+                                echo 'Connected to host system';
+                                uptime;
+                                echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin;
+                                docker pull law12345/app-jenkins:testserver;
+                                docker stop app-container || true;
+                                docker rm app-container || true;
+                                docker run -d --name app-container law12345/app-jenkins:testserver /bin/bash -c \\"echo 'Hello World' && sleep infinity\\";
+                                docker ps -a;  # Verify container status
+                            "
                         '''
                     }
                 }
