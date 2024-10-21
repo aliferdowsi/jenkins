@@ -34,3 +34,4 @@ build/
 
 ### Jenkins Config ###
 jenkins_configuration/
+jenkins-private-key

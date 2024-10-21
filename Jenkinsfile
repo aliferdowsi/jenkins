@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'jdk21-maven-git' // Label for your Jenkins agent that has Java and Maven
+        label 'jdk21-maven-git-docker' // Label for your Jenkins agent that has Java and Maven
     }
     
     environment {
@@ -15,16 +15,55 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Build') {
+        stage('Build Spring-Boot') {
             steps {
                 // Run Maven to build the project
-                sh 'mvn clean install'
+                sh 'mvn clean package'
             }
         }
-        stage('Test') {
+        stage('Build Docker Image') {
             steps {
-                // Run unit tests (if there are any in your project)
-                sh 'mvn test'
+                sh 'docker build -t law12345/app-jenkins:testserver .'
+            }
+        }
+        stage('Docker Login & Push') {
+            steps {
+                script {
+                    // Use credentials stored in Jenkins to log in
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub', 
+                                                     usernameVariable: 'DOCKER_USER', 
+                                                     passwordVariable: 'DOCKER_PASS')]) {
+                        // Log in to Docker Hub
+                        sh """
+                            echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        """
+                    }
+
+                    // Push the image to Docker Hub
+                    sh "docker push law12345/app-jenkins:testserver"
+                }
+            }
+        }
+        stage('SSH to Host System') {
+            steps {
+                script {
+                    // Use SSH credentials stored in Jenkins (ID is 'host-ssh-key')
+                    sshagent(['host-ssh-key']) {
+                        // Execute all commands in one SSH call
+                        sh '''
+                            ssh -o StrictHostKeyChecking=no ferdowsi@172.23.62.135 "
+                                echo 'Connected to host system';
+                                uptime;
+                                echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin;
+                                docker pull law12345/app-jenkins:testserver;
+                                docker stop app-container || true;
+                                docker rm app-container || true;
+                                docker run -d --name app-container law12345/app-jenkins:testserver /bin/bash -c \\"echo 'Hello World' && sleep infinity\\";
+                                docker ps -a;  # Verify container status
+                            "
+                        '''
+                    }
+                }
             }
         }
     }
